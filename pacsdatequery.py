@@ -4,6 +4,8 @@ from pathlib import Path
 from argparse import ArgumentParser, Namespace, ArgumentDefaultsHelpFormatter
 
 from chris_plugin import chris_plugin, PathMapper
+import pypx
+import json
 
 __version__ = '1.0.0'
 
@@ -19,17 +21,21 @@ DISPLAY_TITLE = r"""
 """
 
 
-parser = ArgumentParser(description='!!!CHANGE ME!!! An example ChRIS plugin which '
-                                    'counts the number of occurrences of a given '
-                                    'word in text files.',
-                        formatter_class=ArgumentDefaultsHelpFormatter)
-parser.add_argument('-w', '--word', required=True, type=str,
-                    help='word to count')
+parser = ArgumentParser(description= '''
+    A ChRIS plugin that connects to a PACS and saves the results
+    of queries.
+''', formatter_class=ArgumentDefaultsHelpFormatter)
 parser.add_argument('-p', '--pattern', default='**/*.txt', type=str,
                     help='input file filter glob')
 parser.add_argument('-V', '--version', action='version',
                     version=f'%(prog)s {__version__}')
 
+
+def date_get(inputfile: str) -> str:
+    file_name = str(inputfile).strip('/')[-1]
+    date = str(file_name).split('.')[0]
+    raw_date = str(date).replace('-','')
+    return str(raw_date)
 
 # The main function of this *ChRIS* plugin is denoted by this ``@chris_plugin`` "decorator."
 # Some metadata about the plugin is specified here. There is more metadata specified in setup.py.
@@ -63,14 +69,40 @@ def main(options: Namespace, inputdir: Path, outputdir: Path):
     #
     # Refer to the documentation for more options, examples, and advanced uses e.g.
     # adding a progress bar and parallelism.
-    mapper = PathMapper.file_mapper(inputdir, outputdir, glob=options.pattern, suffix='.count.txt')
+    mapper = PathMapper.file_mapper(inputdir, outputdir, glob=options.pattern, suffix='.json')
     for input_file, output_file in mapper:
         # The code block below is a small and easy example of how to use a ``PathMapper``.
         # It is recommended that you put your functionality in a helper function, so that
         # it is more legible and can be unit tested.
-        data = input_file.read_text()
-        frequency = data.count(options.word)
-        output_file.write_text(str(frequency))
+        date = date_get(str(input_file))
+
+        pacs_settings = {
+            'executable': '/usr/bin/findscu',
+            'aec': 'ORTHANC',
+            'aet': 'CHIPS',
+            'serverIP': '127.0.0.1',
+            'serverPort': '4242',
+        }
+
+        # query parameters
+        query_settings = {
+            'StudyDate': date
+        }
+
+        # output parameters
+        output_settings = {
+            'printReport': 'json',
+            'colorize': 'dark'
+        }
+
+        # python 3.5 ** syntax
+        results = pypx.find({
+            **pacs_settings,
+            **query_settings,
+            **output_settings})
+        results_json = json.dumps(results, indent=4)
+
+        output_file.write_text(results_json)
 
 
 if __name__ == '__main__':

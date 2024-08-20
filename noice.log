@@ -669,3 +669,11 @@
 { "cmdline_hide", "sl:1", "tick:1121", false, 1 }
 { "msg_show", "sl:1", "tick:1122", false, "" }
 { "msg_show", "sl:1", "tick:1123", false, "" }
+{ "msg_showcmd", "sl:1", "tick:3", false, { { 0, "A" } } }
+{ "msg_showcmd", "sl:1", "tick:5", false, { { 0, ":" } } }
+{ "cmdline_show", "sl:1", "tick:6", "mode:c", { { 0, "" } } }
+{ "cmdline_show", "sl:1", "tick:9", "mode:c", { { 0, "w" } } }
+{ "cmdline_show", "sl:1", "tick:11", "mode:c", { { 0, "wq" } } }
+{ "cmdline_hide", "sl:1", "tick:13", false, 1 }
+{ "msg_show", "sl:1", "tick:14", false, "" }
+{ "msg_show", "sl:1", "tick:15", false, "" }
