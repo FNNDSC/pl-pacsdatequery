@@ -4,10 +4,10 @@
 FROM docker.io/python:3.12.1-slim-bookworm
 
 LABEL org.opencontainers.image.authors="FNNDSC <dev@babyMRI.org>" \
-      org.opencontainers.image.title="ChRIS Plugin Title" \
-      org.opencontainers.image.description="A ChRIS plugin that..."
+      org.opencontainers.image.title="A ChRIS PACS Query Plugin" \
+      org.opencontainers.image.description="A ChRIS PACS Plugin to query a PACS and store its responses in JSON format"
 
-ARG SRCDIR=/usr/local/src/app
+ARG SRCDIR=/usr/local/src/pl-pacsdatequery
 WORKDIR ${SRCDIR}
 
 COPY requirements.txt .
@@ -19,4 +19,4 @@ RUN pip install ".[${extras_require}]" \
     && cd / && rm -rf ${SRCDIR}
 WORKDIR /
 
-CMD ["commandname"]
+CMD ["pacsdatequery"]

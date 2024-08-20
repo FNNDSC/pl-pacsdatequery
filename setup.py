@@ -19,18 +19,18 @@ def get_version(rel_path: str) -> str:
 
 
 setup(
-    name='chris-plugin-template',
-    version=get_version('app.py'),
-    description='A ChRIS DS plugin template',
+    name='pacsdatequery',
+    version=get_version('pacsdatequery.py'),
+    description='A ChRIS PACS Plugin to query a PACS and store its responses in JSON format',
     author='FNNDSC',
     author_email='dev@babyMRI.org',
-    url='https://github.com/FNNDSC/python-chrisapp-template',
-    py_modules=['app'],
+    url='https://github.com/FNNDSC/pl-pacsdatequery',
+    py_modules=['pacsdatequery'],
     install_requires=['chris_plugin'],
     license='MIT',
     entry_points={
         'console_scripts': [
-            'commandname = app:main'
+            'pacsdatequery = pacsdatequery:main'
         ]
     },
     classifiers=[
